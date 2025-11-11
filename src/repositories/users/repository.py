@@ -9,7 +9,7 @@ from src.repositories.users.model import User
 class UserRepository(BaseRepository):
     """Репозиторий пользователя"""
 
-    async def get_bu_uid(self, user_uid: uuid.UUID) -> User | None:
+    async def get_by_uid(self, user_uid: uuid.UUID) -> User | None:
         """Получить пользователя по UID"""
         result = await self._session.execute(select(User).where(User.uid == user_uid))
         return result.scalar_one_or_none()
