@@ -27,12 +27,26 @@ class PostgresSettings(CoreBaseSettings):
             f'/{self.POSTGRES_DB}'
         )
 
+class RedisSettings(CoreBaseSettings):
+    REDIS_HOST: str = 'redis'
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
+    REDIS_PASSWORD: SecretStr | None = None
+
+    @property
+    def REDIS_URL(self) -> str:
+        password_part = (
+            f':{self.REDIS_PASSWORD.get_secret_value()}@' if self.REDIS_PASSWORD else ''
+        )
+        return f'redis://{password_part}{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}'
+
 
 class Settings(CoreBaseSettings):
     DEBUG: bool = True
     SECRET_KEY_PASSWORD: SecretStr = ''
 
     postgres: PostgresSettings = PostgresSettings()
+    redis: RedisSettings = RedisSettings()
 
 
 settings = Settings()

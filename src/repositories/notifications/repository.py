@@ -45,3 +45,10 @@ class NotificationRepository(BaseRepository):
         )
         await self._session.execute(stmt)
         await self._session.flush()
+
+    async def get_pending_notifications(self) -> list[Notification]:
+        """Получить все уведомления со статусом 'pending'"""
+        result = await self._session.execute(
+            select(Notification).where(Notification.status == NotificationStatus.PENDING)
+        )
+        return list(result.scalars())

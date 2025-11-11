@@ -4,7 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from src.settings import settings
 
-engine = create_async_engine(settings.postgres.POSTGRES_ASYNC_URL, echo=settings.DEBUG)
+postgres = settings.postgres
+
+engine = create_async_engine(postgres.POSTGRES_ASYNC_URL, echo=settings.DEBUG)
 async_session_local = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False, autoflush=False)
 
 
