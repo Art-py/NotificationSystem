@@ -1,5 +1,7 @@
-from celery import Celery
 from datetime import timedelta
+
+from celery import Celery
+
 from src.settings import settings
 
 redis = settings.redis

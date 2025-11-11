@@ -1,10 +1,11 @@
+import asyncio
+
+from notifications_transport.transports import send_notification
 from src.celery_app import app
-from repositories.users.enum import NotificationChannel
-from src.repositories.notifications.repository import NotificationRepository
-from src.repositories.users.repository import UserRepository
 from src.db import async_session_local
 from src.repositories.notifications.model import NotificationStatus
-import asyncio
+from src.repositories.notifications.repository import NotificationRepository
+from src.repositories.users.repository import UserRepository
 
 
 @app.task(name='src.tasks.notifications.send_notifications')
@@ -25,7 +26,9 @@ async def _send_notifications_async():
             if not user:
                 continue
 
-            # эмуляция логики отправки (email, push, sms и т.д.)
-            notification.status = NotificationStatus.SENT
-            notification.sent_channel = NotificationChannel.EMAIL
-            await session.commit()
+            for user_notification in user.preferred_channels:
+                success = send_notification(user_notification)
+                if success:
+                    user_notification.status = NotificationStatus.SENT
+
+            session.commit()

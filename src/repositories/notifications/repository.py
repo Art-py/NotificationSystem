@@ -13,16 +13,12 @@ class NotificationRepository(BaseRepository):
 
     async def get_by_uid(self, notification_uid: uuid.UUID) -> Notification | None:
         """Получить уведомление по UID"""
-        result = await self._session.execute(
-            select(Notification).where(Notification.uid == notification_uid)
-        )
+        result = await self._session.execute(select(Notification).where(Notification.uid == notification_uid))
         return result.scalar_one_or_none()
 
     async def get_by_user(self, user_uid: uuid.UUID) -> list[Notification]:
         """Получить все уведомления пользователя"""
-        result = await self._session.execute(
-            select(Notification).where(Notification.user_uid == user_uid)
-        )
+        result = await self._session.execute(select(Notification).where(Notification.user_uid == user_uid))
         return list(result.scalars())
 
     async def create(self, notification: Notification) -> Notification:
